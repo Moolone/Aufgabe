@@ -26,7 +26,7 @@ namespace coIT.BewirbDich.Winforms.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctrl_Abbrechen_Click(object sender, EventArgs e)
+        private void ctrl_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -37,7 +37,7 @@ namespace coIT.BewirbDich.Winforms.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctrl_Kalkuliere_Click(object sender, EventArgs e)
+        private void ctrl_Calculate_Click(object sender, EventArgs e)
         {
             var calculation = CalculationFactory.Create(EnumHelper.GetValueByDescription<CalculationType>(ctrl_CalculationType.Text) ?? CalculationType.Turnover);
             calculation.DocumentType = DocumentType.Offer;

@@ -118,7 +118,7 @@
             ctrl_Calculate.TabIndex = 9;
             ctrl_Calculate.Text = "Kalkulieren";
             ctrl_Calculate.UseVisualStyleBackColor = true;
-            ctrl_Calculate.Click += ctrl_Kalkuliere_Click;
+            ctrl_Calculate.Click += ctrl_Calculate_Click;
             // 
             // ctrl_Cancel
             // 
@@ -129,7 +129,7 @@
             ctrl_Cancel.TabIndex = 10;
             ctrl_Cancel.Text = "Abbrechen";
             ctrl_Cancel.UseVisualStyleBackColor = true;
-            ctrl_Cancel.Click += ctrl_Abbrechen_Click;
+            ctrl_Cancel.Click += ctrl_Cancel_Click;
             // 
             // ctrl_IncludeAdditionalProtection
             // 
