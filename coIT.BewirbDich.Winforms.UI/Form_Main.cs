@@ -1,5 +1,6 @@
 using coIT.BewirbDich.Winforms.Domain;
 using coIT.BewirbDich.Winforms.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace coIT.BewirbDich.Winforms.UI;
 
@@ -15,10 +16,11 @@ public partial class Form_Main : Form
     /// <summary>
     /// Erstellt eine neue Instanz dieser Klasse und lädt den erforderlichen Datenbestand.
     /// </summary>
-    public Form_Main()
+    /// <param name="repo">Per DI bereitgestellte Schnittstelle zur Datenbank.</param>
+    public Form_Main(IRepository<Calculation> repo)
     {
         InitializeComponent();
-        _repo = new JsonRepository<Calculation>("database.json");
+        _repo = repo; 
     }
 
     /// <summary>
@@ -29,15 +31,15 @@ public partial class Form_Main : Form
     /// <param name="e"></param>
     private void ctr_NewCalculation_Click(object sender, EventArgs e)
     {
-        var newCalculationForm = new Form_NewCalculation();
-
-        var dialog = newCalculationForm.ShowDialog();
-        if (dialog == DialogResult.OK)
+        using(var newCalculationForm = Program.ServiceProvider.GetRequiredService<Form_NewCalculation>())
         {
-            _repo.Add(newCalculationForm.Calculation);
-            _calculations.ResetBindings(false);
+            var dialog = newCalculationForm.ShowDialog();
+            if (dialog == DialogResult.OK)
+            {
+                _repo.Add(newCalculationForm.Calculation);
+                _calculations.ResetBindings(false);
+            }
         }
-
     }
 
     /// <summary>
@@ -163,16 +165,49 @@ public partial class Form_Main : Form
             DataSource = _repo.ToList()
         };
 
-        ctrl_CalculationsList.DataSource = _calculations;
+        var list = ctrl_CalculationsList;
+        list.DataSource = _calculations;
+
+        var i = 0;
+        ConfigureColumn(list.Columns[nameof(Calculation.Id)], "Id", false, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.DocumentType)], "Typ", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.CalculationType)], "Berechnungsart", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.CalculationBase)], "Berechnungsbasis", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.IncludeAdditionalProtection)], "Zusatzschutz", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.AdditionalProtectionCharge)], "Zusatzschutzaufschlag", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.HasWebshop)], "Hat Webshop", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.Risk)], "Risiko", true, i++) ;
+        ConfigureColumn(list.Columns[nameof(Calculation.Contribution)], "Beitrag", true, i++, "c") ;
+        ConfigureColumn(list.Columns[nameof(Calculation.InsuranceCertificateIssued)], "Versicherungsschein ausgestellt", true, i++);
+        ConfigureColumn(list.Columns[nameof(Calculation.InsuranceSum)], "Versicherungssumme", true, i++, "c") ;
 
         ctrl_CalculationsList.ColumnHeadersVisible = true;
         ctrl_CalculationsList.AutoGenerateColumns = true;
-        ctrl_CalculationsList.Columns[nameof(Calculation.Id)].Visible = false;
-        ctrl_CalculationsList.Columns[nameof(Calculation.Contribution)].DefaultCellStyle.Format = "c";
-        ctrl_CalculationsList.Columns[nameof(Calculation.InsuranceSum)].DefaultCellStyle.Format = "c";
         ctrl_CalculationsList.AutoResizeColumns();
         ctrl_CalculationsList.AutoSize = true;
 
         _calculations.ResetBindings(false);
+    }
+
+    /// <summary>
+    /// Konfiguriert eine Spalte in <see cref="DataGridView"/>.
+    /// </summary>
+    /// <param name="column">Die Spalte.</param>
+    /// <param name="headerText">Die Spaltenüberschrift.</param>
+    /// <param name="isVisible">Gibt an, ob die Spalte sichtbar sein soll.</param>
+    /// <param name="index">Spaltenreihenfolge.</param>
+    /// <param name="format">Anzeigeformat.</param>
+    private void ConfigureColumn(DataGridViewColumn? column, string headerText, bool isVisible = true, int? index = null, string? format = null)
+    {
+        if (column == null) return;
+
+        column.HeaderText = headerText;
+        column.Visible = isVisible;
+
+        if (!string.IsNullOrEmpty(format)) 
+            column.DefaultCellStyle.Format = format;
+
+        if (index.HasValue)
+            column.DisplayIndex = index.Value;
     }
 }

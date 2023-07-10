@@ -10,6 +10,7 @@
         /// </summary>
         public Calculation() : base()
         {
+            Risk = Risk.Low;
         }
 
         /// <summary>

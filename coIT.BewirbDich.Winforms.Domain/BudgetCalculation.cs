@@ -26,9 +26,8 @@
             
             if (IncludeAdditionalProtection)
                 contribution *= 1.0m + (decimal)AdditionalProtectionCharge / 100.0m;
-
-            if (Risk == Risk.Average)
-                contribution *= 1.2m;
+            
+            contribution *= 1.2m;
 
             CalculationBase = Math.Round(CalculationBase, 2);
             Contribution = Math.Round(contribution, 2);

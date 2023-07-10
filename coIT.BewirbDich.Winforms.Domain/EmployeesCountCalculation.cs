@@ -18,15 +18,15 @@
         /// </summary>
         public override void Calculate()
         {
+            decimal contribution;
+            CalculationBase = InsuranceSum / 1000;
+
             //Versicherungsnehmer, die nach Anzahl Mitarbeiter abgerechnet werden und mehr als 5 Mitarbeiter haben, können kein Lösegeld absichern
             if (CalculationBase > 5)
             {
                 IncludeAdditionalProtection = false;
                 AdditionalProtectionCharge = 0;
-            }
-
-            decimal contribution;
-            CalculationBase = InsuranceSum / 1000;
+            }            
 
             if (CalculationBase < 4)
                 contribution = CalculationBase * 250m;
