@@ -1,2 +1,1 @@
-# WinForms Aufgaben
-Für diese Solution benötigst du Visual Studio und NET 7
+# Aufgaben Part 1
